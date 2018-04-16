@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.htc.coastline.mapper.AreaMapper">
+    <sql id="columns">
+        area_name as areaName, id
+    </sql>
+    <select id="select" resultType="com.htc.coastline.entity.AreaDTO">
+        SELECT <include refid="columns"/>
+        FROM area
+    </select>
+</mapper>
