@@ -1,5 +1,7 @@
 package com.htc.coastline.entity;
 
+import com.htc.coastline.constant.ResponseCode;
+
 public class Response<T>  {
     private String message;
     private T module;
@@ -30,10 +32,23 @@ public class Response<T>  {
     }
 
     public static <T> Response<T> success(T module){
+        return get(ResponseCode.SUCCESS, module);
+    }
+
+    public static <T> Response<T> error(ResponseCode responseCode){
+        return get(responseCode, null);
+    }
+
+    public static <T> Response<T> error(ResponseCode responseCode, T module){
+        return get(responseCode, module);
+    }
+
+    public static <T> Response<T> get(ResponseCode responseCode, T module){
         Response<T> response = new Response<>();
         response.setModule(module);
-        response.setCode(10000);
-        response.setMessage("success");
+        response.setCode(responseCode.getCode());
+        response.setMessage(responseCode.getMsg());
         return response;
     }
+
 }

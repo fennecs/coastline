@@ -11,4 +11,10 @@ import java.util.List;
 @Mapper
 public interface AreaMapper {
     List<AreaDTO> select();
+
+    void save(AreaDTO areaDTO);
+
+    AreaDTO getAreaByImgName(String imgName);
+
+    void update(AreaDTO areaDTO);
 }

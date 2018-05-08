@@ -2,10 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.htc.coastline.mapper.AreaMapper">
     <sql id="columns">
-        area_name as areaName, id
+        area_name as areaName, id, resolution, coastline_length as coastlineLength, img_name as imgName, coastline_type as coastlineType
     </sql>
+
+    <insert id="save" parameterType="com.htc.coastline.entity.AreaDTO">
+        INSERT INTO area(area_name, resolution, coastline_length, img_name, coastline_type )
+        VALUES(#{areaName}, #{resolution}, #{coastlineLength}, #{imgName}, #{coastlineType})
+    </insert>
+    <update id="update" parameterType="com.htc.coastline.entity.AreaDTO">
+        UPDATE area
+        SET coastline_length = #{coastlineLength}
+        WHERE id=#{id}
+    </update>
+
     <select id="select" resultType="com.htc.coastline.entity.AreaDTO">
         SELECT <include refid="columns"/>
         FROM area
+        WHERE delete_mark = 0
+        ORDER BY id DESC
+    </select>
+    <select id="getAreaByImgName" resultType="com.htc.coastline.entity.AreaDTO" parameterType="string">
+        SELECT <include refid="columns"/>
+        FROM area
+        WHERE delete_mark = 0 AND img_name=#{imgName}
     </select>
 </mapper>
