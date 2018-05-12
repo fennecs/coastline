@@ -15,13 +15,14 @@ import java.util.*;
 
 public class OpenCVUtil {
     private static Logger log = LoggerFactory.getLogger(OpenCVUtil.class);
-    private final static int  WHITE_BIN = 255;
+    private final static int  WHITE_BIN = 255; // 255
+    private final static int HIST_SIZE = 256; // 256
     static {
         try {
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
             for (Directory directory : Directory.values()) {
                 String path = getFilePath(directory.getValue(), "");
-                File file = new File(path);
+                File file = new File(Objects.requireNonNull(path));
                 if (!file.exists()) {
                     file.mkdirs();
                 }
@@ -53,16 +54,11 @@ public class OpenCVUtil {
             MatOfInt channels = new MatOfInt(0);
             Imgproc.calcHist(Collections.singletonList(img), channels, new Mat(), matGrey, histSize, histRange, false);
             Core.normalize(matGrey, matGrey, 0, matGrey.rows(), Core.NORM_MINMAX, -1, new Mat());
-            // 灰度排序
-            List<BinValue> binValueList = new ArrayList<>(256);
+
             for (int i = 0; i < histSize.get(0, 0)[0]; i++) {
                 log.info(String.format("bin/value[%d]:", i) + matGrey.get(i, 0)[0]);
-                binValueList.add(new BinValue(i, (int)matGrey.get(i, 0)[0]));
             }
-            binValueList.sort(Comparator.comparing(BinValue::getValue));
-            log.info("1st:" + binValueList.get(255).getBin() + "/" + binValueList.get(255).getValue());
-            log.info("2nd:" + binValueList.get(254).getBin() + "/" + binValueList.get(254).getValue());
-            log.info("3rd:" + binValueList.get(253).getBin() + "/" + binValueList.get(253).getValue());
+
             // 二值化
             Imgproc.threshold(img, img, 55, 255, Imgproc.THRESH_BINARY);
             String filePathThreshold = getFilePath(Directory.THRESHOLD_DIRECTORY.getValue(), fileName);
@@ -106,19 +102,14 @@ public class OpenCVUtil {
             String grayImgPath = getFilePath(Directory.GRAY_DIRECTORY.getValue(), imgName);
             if (grayImgPath != null) {
                 Mat img = Imgcodecs.imread(grayImgPath);
-                Mat matGrey = new Mat();
-                MatOfInt histSize = new MatOfInt(256);
-                MatOfFloat histRange = new MatOfFloat(0, 256);
-                MatOfInt channels = new MatOfInt(0);
-                Imgproc.calcHist(Collections.singletonList(img), channels, new Mat(), matGrey, histSize, histRange, false);
+                Mat matGrey = calculateGray(img);
 
                 // 归一化，令数值按比例缩小
                 Core.normalize(matGrey, matGrey, 0, matGrey.rows(), Core.NORM_MINMAX, -1, new Mat());
 
                 // 放入list
                 List<BinValue> binValueList = new ArrayList<>(256);
-                for (int i = 0; i < histSize.get(0, 0)[0]; i++) {
-//                    log.info(String.format("bin/value[%d]:", i) + matGrey.get(i, 0)[0]);
+                for (int i = 0; i < HIST_SIZE; i++) {
                     binValueList.add(new BinValue(i, (int)matGrey.get(i, 0)[0]));
                 }
 
@@ -131,60 +122,75 @@ public class OpenCVUtil {
         }
     }
 
-    public static void generateThresholdImg(int threshold, String imgName){
+    public static Mat generateThresholdImg(int threshold, String imgName){
         try {
             String grayImgPath = getFilePath(Directory.GRAY_DIRECTORY.getValue(), imgName);
             String thresholdImgPath = getFilePath(Directory.THRESHOLD_DIRECTORY.getValue(), imgName);
             if (grayImgPath != null) {
-                Mat img = Imgcodecs.imread(grayImgPath);
+                Mat img = Imgcodecs.imread(grayImgPath, Imgcodecs.IMREAD_GRAYSCALE);
                 Imgproc.threshold(img, img, threshold, 255, Imgproc.THRESH_BINARY);
+//                logCharts(img);
                 Imgcodecs.imwrite(thresholdImgPath, img);
-                log.info("边缘检测完成");
-            }else
-                log.error("thresholdImg path is null");
+                log.info("二值化完成");
+                return img;
+            }else {
+                throw new Exception("thresholdImg path is null");
+            }
         }catch (Exception e){
             log.error("二值化发生异常", e);
+            return null;
         }
     }
 
-    public static void generateEdgeImg(int threshold, String imgName) {
+    private static void logCharts(Mat img) {
+        Mat matGrey = new Mat();
+        MatOfInt histSize = new MatOfInt(256);
+        MatOfFloat histRange = new MatOfFloat(0, 256);
+        MatOfInt channels = new MatOfInt(0);
+        Imgproc.calcHist(Collections.singletonList(img), channels, new Mat(), matGrey, histSize, histRange, false);
+
+        // 放入list
+        for (int i = 0; i < histSize.get(0, 0)[0]; i++) {
+             log.info(String.format("bin/value[%d]:", i) + matGrey.get(i, 0)[0]);
+        }
+    }
+
+    public static Mat generateEdgeImg(int cannyThreshold, int threshold, String imgName) {
         try {
-            String thresholdImgPath = getFilePath(Directory.THRESHOLD_DIRECTORY.getValue(), imgName);
-            if (thresholdImgPath !=null){
-                Mat img = Imgcodecs.imread(thresholdImgPath, Imgcodecs.IMREAD_GRAYSCALE);
-                Imgproc.Canny(img, img, threshold / ratio, threshold);
-                String filePathEdge = getFilePath(Directory.EDGE_DIRECTORY.getValue(), imgName);
-                Imgcodecs.imwrite(filePathEdge, img);
-                log.info("边缘检测完成");
-            }
+            Mat img = generateThresholdImg(threshold, imgName);
+            logCharts(img);
+
+            Imgproc.Canny(img, Objects.requireNonNull(img), cannyThreshold / ratio, cannyThreshold);
+            String filePathEdge = getFilePath(Directory.EDGE_DIRECTORY.getValue(), imgName);
+            Imgcodecs.imwrite(filePathEdge, img);
+            log.info("边缘检测完成");
+            return img;
         }catch (Exception e){
             log.error("边缘检测发生异常", e);
+            return null;
         }
     }
 
-    public static double getEdgePixelNum(String imgName){
+    public static double getEdgePixelNum(int cannyThreshold, int threshold, String imgName){
         try {
-            String edgeImgPath = getFilePath(Directory.EDGE_DIRECTORY.getValue(), imgName);
-            if (edgeImgPath != null) {
-                Mat img = Imgcodecs.imread(edgeImgPath, Imgcodecs.IMREAD_GRAYSCALE);
+            Mat img = generateEdgeImg(cannyThreshold, threshold, imgName);
+            logCharts(img);
+            Mat matGrey = calculateGray(img);
+            return matGrey.get(WHITE_BIN, 0)[0];
 
-                Mat matGrey = new Mat();
-                MatOfInt histSize = new MatOfInt(256);
-                MatOfFloat histRange = new MatOfFloat(0, 256);
-                MatOfInt channels = new MatOfInt(0);
-                Imgproc.calcHist(Collections.singletonList(img), channels, new Mat(), matGrey, histSize, histRange, false);
-
-//                for (int i = 0; i < histSize.get(0, 0)[0]; i++) {
-//                    log.info(String.format("bin/value[%d]:", i) + matGrey.get(i, 0)[0]);
-//                }
-                return matGrey.get(WHITE_BIN, 0)[0];
-            }else {
-                log.error("imgPath is null");
-                return 0.0;
-            }
         }catch (Exception e){
-            log.error("检测边缘长度异常");
+            log.error("检测边缘长度异常", e);
             return 0.0;
         }
+    }
+
+
+    private static Mat calculateGray(Mat img){
+        Mat matGrey = new Mat();
+        MatOfInt histSize = new MatOfInt(HIST_SIZE);
+        MatOfFloat histRange = new MatOfFloat(0, 256);
+        MatOfInt channels = new MatOfInt(0);
+        Imgproc.calcHist(Collections.singletonList(img), channels, new Mat(), matGrey, histSize, histRange, false);
+        return matGrey;
     }
 }

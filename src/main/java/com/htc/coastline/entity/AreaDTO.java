@@ -1,6 +1,6 @@
 package com.htc.coastline.entity;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Date;
 
 /**
  * Created by zack.huang on 2018/4/16
@@ -12,6 +12,7 @@ public class AreaDTO {
     private int coastlineLength;
     private String imgName;
     private int coastlineType;
+    private Date imgTime;
 
     public String getAreaName() {
         return areaName;
@@ -62,4 +63,11 @@ public class AreaDTO {
     }
 
 
+    public Date getImgTime() {
+        return imgTime;
+    }
+
+    public void setImgTime(Date imgTime) {
+        this.imgTime = imgTime;
+    }
 }
