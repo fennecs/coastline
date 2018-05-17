@@ -1,5 +1,7 @@
 package com.htc.coastline.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -12,6 +14,7 @@ public class AreaDTO {
     private int coastlineLength;
     private String imgName;
     private int coastlineType;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date imgTime;
 
     public String getAreaName() {

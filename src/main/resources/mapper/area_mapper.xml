@@ -20,7 +20,7 @@
         FROM area
         WHERE delete_mark = 0
         <if test="areaName != null ">
-            AND area_name = #{areaName}
+            AND area_name LIKE concat("%",#{areaName},"%")
         </if>
         <if test="timeBegin != null">
             AND img_time &gt; #{timeBegin}
