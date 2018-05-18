@@ -7,7 +7,6 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,14 +20,10 @@ public class OpenCVUtil {
     private final static int HIST_SIZE = 256; // 256
     private static final int ratio = 3; // canny 高低阈值比
 
-    @Value("${dll.dir}")
-    private String dllDir;
-
     @PostConstruct
     public void init(){
         try {
-//            System.out.println(System.getProperty("java.library.path"));
-            System.load(dllDir);
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
             for (Directory directory : Directory.values()) {
                 String path = FileUtil.getFilePath(directory.getValue(), "");
                 File file = new File(Objects.requireNonNull(path));

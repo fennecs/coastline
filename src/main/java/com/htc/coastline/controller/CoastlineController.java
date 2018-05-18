@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * Created by zack.huang on 2018/4/16
  */
-@RequestMapping
 @RestController
 @CrossOrigin
 public class CoastlineController {
