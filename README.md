@@ -4,7 +4,10 @@
 本源码包括服务端和前端，服务端采用SpringBoot编写，前端使用jQuery和Bootstrap编写
 
 # 建表
-本项目建表语句在`src\main\resources\建表语句\area.sql`，目前只有一张表
+本项目使用mysql，建表语句在`src\main\resources\建表语句\area.sql`，目前只有一张表
+
+# 运行环境
+jdk8+
 
 # 编译
 1. 本项目为maven项目，编译前确认系统已安装maven
