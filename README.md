@@ -17,7 +17,7 @@ jdk8+
 确保当前路径在源码根目录，执行命令`mvn clean install -Dmaven.test.skip`进行打包, 生成的jar在当前target目录下
 # 启动
 运行项目只需运行jar包，内置tomcat,端口如不指定，默认80  
-`java  -Djava.library.path=[opencv_java341.dll的目录路径] -jar [包路径] --server.port=80`
+`java  -Djava.library.path=[opencv_java341.dll的目录路径] -jar [包路径] --server.port=80`  
 如：  
 `java -Djava.library.path=C:\Users\39058\IdeaProjects\coastline\opencv\x64 -jar target\coastline-0.0.1-SNAPSHOT.jar --server.port=80
 `
