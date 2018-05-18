@@ -18,4 +18,6 @@ public interface AreaMapper {
     AreaDTO getAreaByImgName(String imgName);
 
     void update(AreaDTO areaDTO);
+
+    int deleteAreaById(Long areaId);
 }

@@ -25,4 +25,6 @@ public interface CoastlineService {
     void generateEdgeImg(int cannyThreshold, int threshold, String imgName);
 
     int getCoastlineLength(int cannyThreshold, int threshold, String imgName);
+
+    int deleteAreaById(Long areaId);
 }

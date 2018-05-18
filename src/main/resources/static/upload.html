@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>home</title>
+
+    <!-- BOOTSTRAP STYLES-->
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <!-- PAGE LEVEL STYLES -->
+    <link href="assets/css/bootstrap-fileupload.min.css" rel="stylesheet" />
+    <!-- FONTAWESOME STYLES-->
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <!--CUSTOM BASIC STYLES-->
+    <link href="assets/css/basic.css" rel="stylesheet" />
+    <!--CUSTOM MAIN STYLES-->
+    <link href="assets/css/custom.css" rel="stylesheet" />
+    <!-- prompt -->
+    <link href="assets/css/toastr.css" rel="stylesheet"/>
+    <!--datetime picker-->
+    <link href="assets/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <!-- GOOGLE FONTS-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+</head>
+<body>
+<div id="wrapper">
+    <nav class="navbar navbar-default navbar-cls-top " role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">黄圳·海岸线动态监测</a>
+        </div>
+
+        <div class="header-right">
+        </div>
+    </nav>
+    <!-- /. NAV TOP  -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+
+                <li>
+                    <a href="index.html"><i class="fa fa-dashboard "></i>总览</a>
+                </li>
+                <li>
+                    <a class="active-menu" href="#"><i class="fa fa-plus"></i>上传</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-eyedropper"></i>影像处理</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </nav>
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+        <div id="page-inner">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="page-head-line">上传</h1>
+                    <h1 class="page-subhead-line">这里上传你的遥感数据</h1>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-8">
+                    <form id="uploadForm" class="form-horizontal"  enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="inputAreaName" class="col-md-2 control-label" >影像地区</label>
+                            <div class="col-md-10">
+                                <input class="form-control" name="areaName" type="text" id="inputAreaName" placeholder="如：珠江三角洲" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputResolution" class="col-md-2 control-label">空间分辨率(单位：m)</label>
+                            <div class="col-md-10">
+                                <input class="form-control" name="resolution" type="number" id="inputResolution" placeholder="如：1" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="coastlineType" class="col-md-2 control-label">海岸线类型</label>
+                            <div class="col-md-2">
+                                <select id="coastlineType" class="form-control" name="coastlineType">
+                                    <option value="1">基岩型海岸线</option>
+                                    <option value="2">人工型海岸线</option>
+                                    <option value="3">沙砾型海岸线</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="imgTime" class="col-md-2 control-label">成像时间</label>
+                            <div class="col-md-5">
+                                <div class="input-group date form_date" >
+                                    <input id="imgTime" class="form-control" size="16" type="text" name="imgTime" value="" >
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="averageLevelDiv" class="form-group " hidden>
+                            <label for="averageLevel" class="col-md-2 control-label">平均潮位（单位：cm）</label>
+                            <div class="col-md-5">
+                                <input id="averageLevel" class="form-control" type="number" name="averageLevel" value="" >
+                            </div>
+                        </div>
+                        <div id="gapDiv" class="form-group " hidden >
+                            <label for="gap" class="col-md-2 control-label">潮位差（单位：cm）</label>
+                            <div class="col-md-5">
+                                <input id="gap" class="form-control" type="number" name="gap" value="" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="fileUpload" class="col-md-2 control-label">选择影像</label>
+                            <div class="col-md-3">
+                                <div id="fileUpload" class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="fileupload-preview thumbnail" style="width: 200px; height: 150px;"></div>
+                                    <div>
+                                        <span class="btn btn-file btn-success"><span class="fileupload-new">Select image</span><span class="fileupload-exists">Change</span><input name="file" type="file" required></span>
+                                        <a href="#" class="btn btn-danger fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="2ndImgDiv" class="col-md-3" hidden>
+                                <div id="fileUpload2" class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="fileupload-preview thumbnail" style="width: 200px; height: 150px;"></div>
+                                    <div>
+                                        <span class="btn btn-file btn-success"><span class="fileupload-new">Select image</span><span class="fileupload-exists">Change</span><input name="file2" type="file" required></span>
+                                        <a href="#" class="btn btn-danger fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-3">
+                                <input type="button" id="newImage"  class="btn btn-default form-control" value="上传">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <!--/.Row-->
+
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+
+<div id="footer-sec">
+    毕业设计
+</div>
+
+<!-- /. FOOTER  -->
+<!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
+<!-- JQUERY SCRIPTS -->
+<script src="assets/js/jquery-1.10.2.js"></script>
+<!-- BOOTSTRAP SCRIPTS -->
+<script src="assets/js/bootstrap.js"></script>
+<!-- PAGE LEVEL SCRIPTS -->
+<script src="assets/js/bootstrap-fileupload.js"></script>
+<!-- METISMENU SCRIPTS -->
+<script src="assets/js/jquery.metisMenu.js"></script>
+<!--datetime picker-->
+<script type="text/javascript" src="assets/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!-- prompt -->
+<script src="assets/js/toastr.js"></script>
+<!-- CUSTOM SCRIPTS -->
+<script src="assets/js/custom.js"></script>
+<script src="assets/js/upload.js"></script>
+
+</body>
+</html>

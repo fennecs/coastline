@@ -1,21 +1,23 @@
 package com.htc.coastline.constant;
 
 public enum Directory {
-    ORIGIN_DIRECTORY("classpath:static/images/origin/"),
+    ORIGIN_DIRECTORY("origin/"),
 
-    GRAY_DIRECTORY("classpath:static/images/gray/"),
+    GRAY_DIRECTORY("gray/"),
 
-    THRESHOLD_DIRECTORY("classpath:static/images/threshold/"),
+    THRESHOLD_DIRECTORY("threshold/"),
 
-    EDGE_DIRECTORY("classpath:static/images/edge/");
+    EDGE_DIRECTORY("edge/");
 
     private String value;
+
+    public static final String PROCESS_IMAGES_HOME = System.getProperty("user.home").replace("\\", "/").concat("/CoastlineProcess/");
 
     Directory(String value) {
         this.value = value;
     }
 
     public String getValue() {
-        return value;
+        return PROCESS_IMAGES_HOME.concat(value);
     }
 }

@@ -7,8 +7,10 @@ import com.htc.coastline.entity.BinValue;
 import com.htc.coastline.entity.BinValueDoubleList;
 import com.htc.coastline.mapper.AreaMapper;
 import com.htc.coastline.service.CoastlineService;
-import com.htc.coastline.util.FileNameUtil;
+import com.htc.coastline.util.FileUtil;
 import com.htc.coastline.util.OpenCVUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class CoastlineServiceImpl implements CoastlineService {
+    private static final Logger log = LoggerFactory.getLogger(CoastlineServiceImpl.class);
+
     @Resource
     private AreaMapper areaMapper;
 
@@ -34,12 +38,15 @@ public class CoastlineServiceImpl implements CoastlineService {
     @Override
     public String upload(String areaName, int resolution, int coastlineType, MultipartFile file, Date imgTime) {
         try {
+            // 获取文件名后缀
             String fileSuffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            String fileName = FileNameUtil.getFileName().concat(fileSuffix);
-            String filePath = OpenCVUtil.getFilePath(Directory.ORIGIN_DIRECTORY.getValue(), fileName);
+            // 拼接唯一文件名
+            String fileName = FileUtil.getFileName().concat(fileSuffix);
+            // 获得保存文件路径
+            String filePath = FileUtil.getFilePath(Directory.ORIGIN_DIRECTORY.getValue(), fileName);
             File originFile = new File(filePath);
-            if (!originFile.exists()) {
-                originFile.createNewFile();
+            if (originFile.createNewFile()) {
+                log.warn("file exist, fileName:{}", fileName);
             }
 
             file.transferTo(originFile);
@@ -98,6 +105,11 @@ public class CoastlineServiceImpl implements CoastlineService {
         areaMapper.update(areaDTO);
 
         return length;
+    }
+
+    @Override
+    public int deleteAreaById(Long areaId) {
+        return areaMapper.deleteAreaById(areaId);
     }
 
 }

@@ -52,6 +52,15 @@
             <artifactId>druid</artifactId>
             <version>1.0.11</version>
         </dependency>
+
+        <!--另一种方式是手动安装到本地仓库再引用-->
+        <dependency>
+            <groupId>com.opencv</groupId>
+            <artifactId>opencv</artifactId>
+            <version>3.4.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/opencv/opencv-341.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
@@ -59,6 +68,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--scope:system必需-->
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>

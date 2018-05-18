@@ -9,10 +9,17 @@
         INSERT INTO area(area_name, resolution, coastline_length, img_name, coastline_type, img_time )
         VALUES(#{areaName}, #{resolution}, #{coastlineLength}, #{imgName}, #{coastlineType}, #{imgTime})
     </insert>
+
     <update id="update" parameterType="com.htc.coastline.entity.AreaDTO">
         UPDATE area
         SET coastline_length = #{coastlineLength}
         WHERE id=#{id}
+    </update>
+
+    <update id="deleteAreaById" parameterType="long">
+        UPDATE area
+        SET delete_mark = 1
+        WHERE id=#{areaId}
     </update>
 
     <select id="select" resultType="com.htc.coastline.entity.AreaDTO">

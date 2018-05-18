@@ -26,8 +26,8 @@ public class CoastlineController {
 
     @RequestMapping(value = "/areas", method = RequestMethod.GET)
     public Response<List<AreaDTO>> selectAreas(@RequestParam(required = false) String areaName,
-                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeBegin,
-                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd) {
+                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date timeBegin,
+                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date timeEnd) {
         AreaQTO areaQTO = new AreaQTO();
         areaQTO.setAreaName("".equals(areaName) ? null : areaName);
         areaQTO.setTimeBegin(timeBegin);
@@ -40,7 +40,7 @@ public class CoastlineController {
                                                  @RequestParam int resolution,
                                                  @RequestParam int coastlineType,
                                                  @RequestParam("file") MultipartFile file,
-                                                 @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")Date imgTime) {
+                                                 @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date imgTime) {
         String imgName = coastlineService.upload(areaName, resolution, coastlineType, file, imgTime);
         return Response.success(imgName);
     }
@@ -69,13 +69,18 @@ public class CoastlineController {
     @RequestMapping(value = "/edge", method = RequestMethod.POST)
     public Response<Void> generateEdgeImg(@RequestParam int threshold,
                                           @RequestParam String imgName,
-                                          @RequestParam int cannyThreshold){
+                                          @RequestParam int cannyThreshold) {
         coastlineService.generateEdgeImg(cannyThreshold, threshold, imgName);
         return Response.success(null);
     }
 
     @RequestMapping(value = "/coastlineLength", method = RequestMethod.GET)
-    public Response<Integer> getCoastlineLength(@RequestParam String imgName, @RequestParam int threshold, @RequestParam int cannyThreshold){
+    public Response<Integer> getCoastlineLength(@RequestParam String imgName, @RequestParam int threshold, @RequestParam int cannyThreshold) {
         return Response.success(coastlineService.getCoastlineLength(cannyThreshold, threshold, imgName));
+    }
+
+    @RequestMapping(value = "/delete/{areaId}", method = RequestMethod.POST)
+    public Response<Integer> deleteAreaById(@PathVariable Long areaId){
+        return Response.success(coastlineService.deleteAreaById(areaId));
     }
 }

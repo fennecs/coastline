@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by zack.huang on 2018/4/16
  */
 public class AreaDTO {
-    private String id;
+    private Long id;
     private String areaName;
     private int resolution;
     private int coastlineLength;
@@ -25,11 +25,11 @@ public class AreaDTO {
         this.areaName = areaName;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
