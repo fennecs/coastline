@@ -13,5 +13,5 @@
 
 执行命令`mvn package -Dmaven.test.skip`进行打包
 # 启动
-运行项目只需运行jar包，内置tomcat
-`java -jar -[包路径] -Dserver.port=80 -Djava.library.path=[opencv_java341.dll的路径]`
+运行项目只需运行jar包，内置tomcat,端口如不指定，默认80
+`java -jar -[包路径] --server.port=80 --dll.dir=[opencv_java341.dll的路径]`
